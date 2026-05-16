@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SecondSpace</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="landingPage">
+    <header class="top-header">
+      <h2>SecondSpace</h2>
+      <div class="header-actions">
+        <button id="goToLoginBtn">Login</button>
+        <button id="goToRegisterBtn">Get Started</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-content">
+        <span class="tag">Student Marketplace</span>
+        <h1>Buy, Sell and Exchange Essentials Easily</h1>
+        <p>
+          SecondSpace is a simple platform for students to buy and sell pre-owned items,
+          connect with others, and make second-hand shopping more affordable and convenient.
+        </p>
+
+        <div class="hero-buttons">
+          <button id="heroRegisterBtn">Start Selling</button>
+          <button id="heroLoginBtn">Browse Items</button>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <h3>What you can find</h3>
+        <div class="category-grid">
+
+  <div class="flip-card">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        📚 Books
+      </div>
+      <div class="flip-card-back">
+        Notes, textbooks, guides and study materials.
+      </div>
+    </div>
+  </div>
+
+  <div class="flip-card">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        💻 Electronics
+      </div>
+      <div class="flip-card-back">
+        Laptops, calculators, gadgets and accessories.
+      </div>
+    </div>
+  </div>
+
+  <div class="flip-card">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        🪑 Essentials
+      </div>
+      <div class="flip-card-back">
+        Furniture, bags, hostel and daily essentials.
+      </div>
+    </div>
+  </div>
+
+  <div class="flip-card">
+    <div class="flip-card-inner">
+      <div class="flip-card-front">
+        👕 Lifestyle
+      </div>
+      <div class="flip-card-back">
+        Clothes, fashion, decor and personal items.
+      </div>
+    </div>
+  </div>
+
+</div>
+      </div>
+    </section>
+  </div>
+
+  <div id="authPage" class="hidden">
+    <div class="auth-card">
+
+      <div id="loginView">
+        <h2>Login</h2>
+        <p class="subtext">Welcome back to SecondSpace</p>
+
+        <input id="loginEmail" type="email" placeholder="Email" />
+        <input id="loginPassword" type="password" placeholder="Password" />
+
+        <button id="loginBtn">Login</button>
+
+        <p class="switch-text">
+          Don't have an account?
+          <button type="button" id="showRegisterBtn" class="link-btn">Register</button>
+        </p>
+
+        <button type="button" id="backHomeFromLogin" class="back-home-btn">← Back to home</button>
+      </div>
+
+      <div id="registerView" class="hidden">
+        <h2>Create Account</h2>
+        <p class="subtext">Join SecondSpace and start listing items</p>
+
+        <input id="registerName" type="text" placeholder="Full Name" />
+        <input id="registerCollege" type="text" placeholder="College Name" />
+        <input id="registerDepartment" type="text" placeholder="Course / Department" />
+        <input id="registerYear" type="text" placeholder="Year / Semester" />
+        <textarea id="registerAddress" placeholder="Address"></textarea>
+        <input id="registerEmail" type="email" placeholder="Email" />
+        <input id="registerPassword" type="password" placeholder="Password" />
+
+        <button id="registerBtn">Create Account</button>
+
+        <p class="switch-text">
+          Already have an account?
+          <button type="button" id="showLoginBtn" class="link-btn">Login</button>
+        </p>
+
+        <button type="button" id="backHomeFromRegister" class="back-home-btn">← Back to home</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="app" class="hidden">
+    <div class="dashboard-layout">
+
+      <aside class="sidebar">
+        <div>
+          <div class="sidebar-logo">SecondSpace</div>
+
+          <nav class="sidebar-nav">
+            <button class="nav-item active" id="navBrowseBtn">
+              <span class="nav-icon">🏠</span>
+              <span>Browse</span>
+            </button>
+
+            <button class="nav-item" id="navSellBtn">
+              <span class="nav-icon">＋</span>
+              <span>Sell Item</span>
+            </button>
+
+            <button class="nav-item" id="navListingsBtn">
+              <span class="nav-icon">🗂️</span>
+              <span>My Listings</span>
+            </button>
+
+            <button class="nav-item" id="navInterestsBtn">
+              <span class="nav-icon">♡</span>
+              <span>Interests</span>
+            </button>
+
+            <button class="nav-item hidden" id="navAdminBtn">
+              <span class="nav-icon">🛡️</span>
+              <span>Admin</span>
+            </button>
+          </nav>
+        </div>
+
+        <div class="sidebar-bottom">
+          <button id="logoutBtn" class="logout-sidebar-btn">Logout</button>
+        </div>
+      </aside>
+
+      <main class="dashboard-content">
+
+        <section id="browseSection" class="page-section">
+          <div class="section-header">
+            <h1>Browse Items</h1>
+            <p>Find items listed by students and admins</p>
+          </div>
+
+          <div class="listings-grid" id="listingsGrid"></div>
+
+          <div class="empty-state hidden" id="emptyState">
+            <div class="empty-icon">📦</div>
+            <p>No items available</p>
+          </div>
+        </section>
+
+        <section id="sellSection" class="page-section hidden">
+          <div class="section-header">
+            <h1>Sell Item</h1>
+            <p>Add complete details for your item</p>
+          </div>
+
+          <div class="form-card sell-form">
+            <input type="text" id="itemTitle" placeholder="Item Name" />
+
+            <select id="itemCategory">
+              <option value="">Select Category</option>
+              <option>Books</option>
+              <option>Electronics</option>
+              <option>Furniture</option>
+              <option>Clothing</option>
+              <option>Accessories</option>
+              <option>Other</option>
+            </select>
+
+            <input type="text" id="itemPrice" placeholder="Price (₹)" />
+
+            <select id="itemCondition">
+              <option value="">Select Condition</option>
+              <option>New</option>
+              <option>Like New</option>
+              <option>Good</option>
+              <option>Used</option>
+            </select>
+
+            <textarea id="itemDescription" placeholder="Description"></textarea>
+            <input type="text" id="itemPhone" placeholder="Phone Number" />
+            <input type="email" id="itemEmail" placeholder="Contact Email" />
+
+            <button id="addItemBtn">Add Item</button>
+          </div>
+        </section>
+
+        <section id="myListingsSection" class="page-section hidden">
+          <div class="section-header">
+            <h1>My Listings</h1>
+            <p>Items you have posted</p>
+          </div>
+
+          <div class="listings-grid" id="myListingsGrid"></div>
+
+          <div class="empty-state hidden" id="myListingsEmptyState">
+            <div class="empty-icon">🗂️</div>
+            <p>No listings yet</p>
+          </div>
+        </section>
+
+        <section id="interestsSection" class="page-section hidden">
+          <div class="section-header">
+            <h1>Interests</h1>
+            <p>Buyers who want your items</p>
+          </div>
+
+          <div class="table-card">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Buyer</th>
+                  <th>Email</th>
+                  <th>Item</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody id="interestsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="adminSection" class="page-section hidden">
+          <div class="section-header">
+            <h1>Admin Dashboard</h1>
+            <p>Overview of users, items and interests</p>
+          </div>
+
+          <div class="admin-cards">
+            <div class="admin-card">
+              <h3>Total Users</h3>
+              <p id="totalUsers">0</p>
+            </div>
+            <div class="admin-card">
+              <h3>Total Listings</h3>
+              <p id="totalListings">0</p>
+            </div>
+            <div class="admin-card">
+              <h3>Total Interests</h3>
+              <p id="totalInterests">0</p>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <h3>Users</h3>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>College</th>
+                  <th>Department</th>
+                  <th>Year</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
