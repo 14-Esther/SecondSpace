@@ -59,8 +59,30 @@ export async function register(
   }
 }
 
+// ================= HARDCODED ADMIN CREDENTIALS =================
+// Change these to your desired admin email/password
+const ADMIN_EMAIL    = "admin@secondspace.com";
+const ADMIN_PASSWORD = "Admin@123";
+const ADMIN_UID      = "hardcoded-admin-001";
+
+export function getHardcodedAdminUID() { return ADMIN_UID; }
+
 // ================= LOGIN =================
 export async function login(email, password) {
+  // Hardcoded admin bypass — no Firebase Auth required
+  if (email.trim().toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    return {
+      uid: ADMIN_UID,
+      name: "Admin",
+      email: ADMIN_EMAIL,
+      role: "admin",
+      purpose: "admin",
+      college: "SecondSpace HQ",
+      dept: "Administration",
+      year: ""
+    };
+  }
+
   try {
     const cred = await signInWithEmailAndPassword(auth, email, password);
 
