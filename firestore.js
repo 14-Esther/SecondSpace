@@ -1,7 +1,3 @@
-// =============================================
-// FIRESTORE.JS – Database Operations Module
-// =============================================
-
 import { db } from "./firebase-config.js";
 import {
   collection,
