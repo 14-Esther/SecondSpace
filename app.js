@@ -5,7 +5,7 @@ import {
   logout,
   listenAuthState,
   getCurrentUserProfile,
-  getHardcodedAdminUID
+  ADMIN_UID
 } from "./auth.js";
 
 import {
@@ -22,49 +22,48 @@ import {
 
 // ================= ELEMENTS =================
 const landingPage = document.getElementById("landingPage");
-const authPage = document.getElementById("authPage");
-const app = document.getElementById("app");
+const authPage    = document.getElementById("authPage");
+const app         = document.getElementById("app");
 
-const loginView = document.getElementById("loginView");
+const loginView    = document.getElementById("loginView");
 const registerView = document.getElementById("registerView");
 
-const goToLoginBtn = document.getElementById("goToLoginBtn");
-const heroLoginBtn = document.getElementById("heroLoginBtn");
-const goToRegisterBtn = document.getElementById("goToRegisterBtn");
-const heroRegisterBtn = document.getElementById("heroRegisterBtn");
-const showLoginBtn = document.getElementById("showLoginBtn");
-const showRegisterBtn = document.getElementById("showRegisterBtn");
-const backHomeFromLogin = document.getElementById("backHomeFromLogin");
-const backHomeFromRegister = document.getElementById("backHomeFromRegister");
+const goToLoginBtn        = document.getElementById("goToLoginBtn");
+const heroLoginBtn        = document.getElementById("heroLoginBtn");
+const goToRegisterBtn     = document.getElementById("goToRegisterBtn");
+const heroRegisterBtn     = document.getElementById("heroRegisterBtn");
+const showLoginBtn        = document.getElementById("showLoginBtn");
+const showRegisterBtn     = document.getElementById("showRegisterBtn");
+const backHomeFromLogin   = document.getElementById("backHomeFromLogin");
+const backHomeFromRegister= document.getElementById("backHomeFromRegister");
 
-const registerName = document.getElementById("registerName");
-const registerCollege = document.getElementById("registerCollege");
+const registerName       = document.getElementById("registerName");
+const registerCollege    = document.getElementById("registerCollege");
 const registerDepartment = document.getElementById("registerDepartment");
-const registerYear = document.getElementById("registerYear");
-const registerAddress = document.getElementById("registerAddress");
-const registerEmail = document.getElementById("registerEmail");
-const registerPassword = document.getElementById("registerPassword");
-const registerRole = document.getElementById("registerRole");
-const registerPurpose = document.getElementById("registerPurpose");
+const registerYear       = document.getElementById("registerYear");
+const registerAddress    = document.getElementById("registerAddress");
+const registerEmail      = document.getElementById("registerEmail");
+const registerPassword   = document.getElementById("registerPassword");
+const registerRole       = document.getElementById("registerRole");
+const registerPurpose    = document.getElementById("registerPurpose");
 
-const loginEmail = document.getElementById("loginEmail");
+const loginEmail    = document.getElementById("loginEmail");
 const loginPassword = document.getElementById("loginPassword");
 
-const itemTitle = document.getElementById("itemTitle");
-const itemCategory = document.getElementById("itemCategory");
-const itemPrice = document.getElementById("itemPrice");
+const itemTitle       = document.getElementById("itemTitle");
+const itemCategory    = document.getElementById("itemCategory");
+const itemPrice       = document.getElementById("itemPrice");
 const itemDescription = document.getElementById("itemDescription");
 
 const registerBtn = document.getElementById("registerBtn");
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const addItemBtn = document.getElementById("addItemBtn");
+const loginBtn    = document.getElementById("loginBtn");
+const logoutBtn   = document.getElementById("logoutBtn");
+const addItemBtn  = document.getElementById("addItemBtn");
 
 // ================= STATE =================
-let currentUser = null;
+let currentUser        = null;
 let currentUserProfile = null;
-let allItems = [];
-let _authInitialized = false;
+let allItems           = [];
 let _userInitiatedLogin = false;
 
 // ================= TOAST =================
@@ -172,59 +171,50 @@ loginBtn?.addEventListener("click", async () => {
   }
   loginBtn.disabled = true;
   loginBtn.textContent = "Signing in…";
-  _userInitiatedLogin = true;
-
-  const timeout = setTimeout(() => {
-    resetLoginBtn();
-    _userInitiatedLogin = false;
-    showToast("Login taking too long. Check your connection.", "error");
-  }, 10000);
 
   try {
     const profile = await login(loginEmail.value, loginPassword.value);
-    clearTimeout(timeout);
-    window._loginTimeout = null;
-    resetLoginBtn();
-    _userInitiatedLogin = false;
 
-    // Hardcoded admin — no Firebase Auth state fires, handle directly
-    if (profile.uid === getHardcodedAdminUID()) {
-      currentUser = { uid: profile.uid };
+    // Hardcoded admin: Firebase Auth never fires, so we handle everything here
+    if (profile.uid === ADMIN_UID) {
+      resetLoginBtn();
+      currentUser        = { uid: ADMIN_UID };
       currentUserProfile = profile;
       showApp();
       setupDashboard();
       loadBrowseItems();
+      return;
     }
-    // For real Firebase users, onAuthStateChanged will fire and handle it
+
+    // Normal users: set flag so onAuthStateChanged picks it up
+    _userInitiatedLogin = true;
+
   } catch (err) {
-    clearTimeout(timeout);
-    window._loginTimeout = null;
     resetLoginBtn();
-    _userInitiatedLogin = false;
     showToast(err.message, "error");
   }
 });
 
 // ================= LOGOUT =================
 logoutBtn?.addEventListener("click", async () => {
-  await logout();
-  currentUser = null;
+  // If hardcoded admin, no Firebase signOut needed — just reset state
+  if (currentUser?.uid !== ADMIN_UID) {
+    await logout();
+  }
+  currentUser        = null;
   currentUserProfile = null;
-  _authInitialized = false;
   _userInitiatedLogin = false;
   showHome();
 });
 
-// ================= AUTH STATE =================
-// FIX: Don't auto-redirect on page load if user has an existing session.
-// Only navigate to app if they explicitly clicked Login.
+// ================= AUTH STATE (Firebase users only) =================
 listenAuthState(async (user) => {
-  if (window._loginTimeout) { clearTimeout(window._loginTimeout); window._loginTimeout = null; }
-
   if (!user) {
     resetLoginBtn();
-    _authInitialized = true;
-    if (!app.classList.contains("hidden")) showHome();
+    // If app is open and it's not the hardcoded admin, go home
+    if (!app.classList.contains("hidden") && currentUser?.uid !== ADMIN_UID) {
+      showHome();
+    }
     return;
   }
 
@@ -237,18 +227,15 @@ listenAuthState(async (user) => {
 
   resetLoginBtn();
 
-  // Only enter app if user clicked login, or was already in the app (page refresh)
   const onAuthPage = !authPage.classList.contains("hidden");
-  const onApp = !app.classList.contains("hidden");
+  const onApp      = !app.classList.contains("hidden");
 
   if (_userInitiatedLogin || onAuthPage || onApp) {
     showApp();
     setupDashboard();
     loadBrowseItems();
   }
-  // If user just opened the site with existing session, stay on landing page
 
-  _authInitialized = true;
   _userInitiatedLogin = false;
 });
 
@@ -263,7 +250,7 @@ function setupDashboardHeader() {
   const browseSection = document.getElementById("browseSection");
   if (!browseSection || browseSection.querySelector(".greeting-bar")) return;
   const name = currentUserProfile?.name || "there";
-  const bar = document.createElement("div");
+  const bar  = document.createElement("div");
   bar.className = "greeting-bar";
   bar.innerHTML = `
     <div>
@@ -278,20 +265,20 @@ function setupDashboardHeader() {
 }
 
 function setupSidebarUser() {
-  const name = currentUserProfile?.name || "User";
-  const role = currentUserProfile?.role || "member";
+  const name     = currentUserProfile?.name || "User";
+  const role     = currentUserProfile?.role || "member";
   const initials = name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
   const avatarEl = document.getElementById("userAvatar");
-  const nameEl = document.getElementById("sidebarName");
-  const roleEl = document.getElementById("sidebarRole");
+  const nameEl   = document.getElementById("sidebarName");
+  const roleEl   = document.getElementById("sidebarRole");
   if (avatarEl) avatarEl.textContent = initials;
-  if (nameEl) nameEl.textContent = name;
-  if (roleEl) roleEl.textContent = role;
+  if (nameEl)   nameEl.textContent   = name;
+  if (roleEl)   roleEl.textContent   = role;
 }
 
 function setupRoleUI() {
   const navAdminBtn = document.getElementById("navAdminBtn");
-  const navSellBtn = document.getElementById("navSellBtn");
+  const navSellBtn  = document.getElementById("navSellBtn");
   currentUserProfile?.role === "admin"
     ? navAdminBtn?.classList.remove("hidden")
     : navAdminBtn?.classList.add("hidden");
@@ -308,7 +295,7 @@ async function loadBrowseItems() {
   allItems = items;
   const gstatBrowse = document.getElementById("gstatBrowse");
   if (gstatBrowse) gstatBrowse.textContent = items.length;
-  const myCount = items.filter(i => i.sellerId === currentUser?.uid).length;
+  const myCount   = items.filter(i => i.sellerId === currentUser?.uid).length;
   const gstatItems = document.getElementById("gstatItems");
   if (gstatItems) gstatItems.textContent = myCount;
   renderItems(items);
@@ -323,9 +310,9 @@ function renderItems(items) {
     return;
   }
   grid.innerHTML = items.map((item, i) => {
-    const meta = getCategoryMeta(item.category);
+    const meta  = getCategoryMeta(item.category);
     const isOwn = item.sellerId === currentUser?.uid;
-    const desc = item.description
+    const desc  = item.description
       ? `<p class="card-desc">${item.description}</p>`
       : `<p class="card-desc card-desc-empty">No description provided.</p>`;
     const seller = item.sellerName ? `<span class="card-seller">👤 ${item.sellerName}</span>` : "";
@@ -389,17 +376,17 @@ registerRole?.addEventListener("change", () => {
 });
 
 // ================= SIDEBAR NAVIGATION =================
-const browseSection = document.getElementById("browseSection");
-const sellSection = document.getElementById("sellSection");
+const browseSection     = document.getElementById("browseSection");
+const sellSection       = document.getElementById("sellSection");
 const myListingsSection = document.getElementById("myListingsSection");
-const interestsSection = document.getElementById("interestsSection");
-const adminSection = document.getElementById("adminSection");
+const interestsSection  = document.getElementById("interestsSection");
+const adminSection      = document.getElementById("adminSection");
 
-const navBrowseBtn = document.getElementById("navBrowseBtn");
-const navSellBtn = document.getElementById("navSellBtn");
-const navListingsBtn = document.getElementById("navListingsBtn");
+const navBrowseBtn    = document.getElementById("navBrowseBtn");
+const navSellBtn      = document.getElementById("navSellBtn");
+const navListingsBtn  = document.getElementById("navListingsBtn");
 const navInterestsBtn = document.getElementById("navInterestsBtn");
-const navAdminBtn = document.getElementById("navAdminBtn");
+const navAdminBtn     = document.getElementById("navAdminBtn");
 
 function hideAllSections() {
   [browseSection, sellSection, myListingsSection, interestsSection, adminSection]
@@ -486,31 +473,34 @@ async function loadInterests() {
 
 // ================= ADMIN =================
 async function loadAdminData() {
+  const tbody = document.getElementById("usersTableBody");
+  if (tbody) tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#9CA3AF;">⏳ Loading…</td></tr>`;
+
   const [users, items, interests] = await Promise.all([getAllUsers(), getAllItems(), getAllInterests()]);
-  const totalUsersEl = document.getElementById("totalUsers");
+
+  const totalUsersEl    = document.getElementById("totalUsers");
   const totalListingsEl = document.getElementById("totalListings");
-  if (totalUsersEl) totalUsersEl.textContent = users.length;
+  if (totalUsersEl)    totalUsersEl.textContent    = users.length;
   if (totalListingsEl) totalListingsEl.textContent = items.length;
 
-  // Add extra stat cards if not already present
+  // Add 3rd stat card for interests if not already there
   const adminStats = document.querySelector(".admin-stats");
   if (adminStats && !document.getElementById("totalInterests")) {
-    const intCard = document.createElement("div");
-    intCard.className = "stat-card";
-    intCard.innerHTML = `<span class="stat-icon">💬</span><div><p class="stat-num" id="totalInterests">${interests.length}</p><p class="stat-label">Total Interests</p></div>`;
-    adminStats.appendChild(intCard);
+    const card = document.createElement("div");
+    card.className = "stat-card";
+    card.innerHTML = `<span class="stat-icon">💬</span><div><p class="stat-num" id="totalInterests">${interests.length}</p><p class="stat-label">Total Interests</p></div>`;
+    adminStats.appendChild(card);
   } else {
     const el = document.getElementById("totalInterests");
     if (el) el.textContent = interests.length;
   }
 
-  const tbody = document.getElementById("usersTableBody");
   if (!tbody) return;
 
   tbody.innerHTML = `
-    <tr class="admin-table-section-header"><td colspan="6">👥 All Users</td></tr>
+    <tr class="admin-table-section-header"><td colspan="6">👥 All Users (${users.length})</td></tr>
     <tr class="admin-th-row"><td>Name</td><td>Email</td><td>Role</td><td>College</td><td>Purpose</td><td>Action</td></tr>
-    ${users.map(u => `
+    ${users.length ? users.map(u => `
       <tr>
         <td>${u.name || "—"}</td>
         <td>${u.email || "—"}</td>
@@ -518,42 +508,41 @@ async function loadAdminData() {
         <td>${u.college || "—"}</td>
         <td style="text-transform:capitalize;">${u.purpose || "—"}</td>
         <td><button class="admin-del-btn" onclick="handleAdminDeleteUser('${u.id}')">🗑 Delete</button></td>
-      </tr>`).join("")}
+      </tr>`).join("")
+    : `<tr><td colspan="6" style="text-align:center;padding:20px;color:#9CA3AF;">No users yet.</td></tr>`}
 
-    <tr class="admin-table-section-header"><td colspan="6">📦 All Listings</td></tr>
+    <tr class="admin-table-section-header"><td colspan="6">📦 All Listings (${items.length})</td></tr>
     <tr class="admin-th-row"><td>Title</td><td>Category</td><td>Price</td><td>Seller</td><td>Posted</td><td>Action</td></tr>
-    ${items.map(item => `
+    ${items.length ? items.map(item => `
       <tr>
         <td>${item.title || "—"}</td>
         <td>${item.category || "—"}</td>
         <td>₹${item.price || "—"}</td>
-        <td>${item.sellerName || item.sellerId?.slice(0,8) + "…" || "—"}</td>
+        <td>${item.sellerName || "—"}</td>
         <td>${item.createdAt?.toDate ? item.createdAt.toDate().toLocaleDateString("en-IN") : "—"}</td>
         <td><button class="admin-del-btn" onclick="handleAdminDeleteItem('${item.id}')">🗑 Delete</button></td>
-      </tr>`).join("")}
+      </tr>`).join("")
+    : `<tr><td colspan="6" style="text-align:center;padding:20px;color:#9CA3AF;">No listings yet.</td></tr>`}
 
-    <tr class="admin-table-section-header"><td colspan="6">💬 All Interests</td></tr>
+    <tr class="admin-table-section-header"><td colspan="6">💬 All Interests (${interests.length})</td></tr>
     <tr class="admin-th-row"><td colspan="2">Item ID</td><td>Buyer</td><td colspan="2">Seller ID</td><td>Date</td></tr>
-    ${interests.length
-      ? interests.map(i => `
-          <tr>
-            <td colspan="2">${i.itemId || "—"}</td>
-            <td>${i.buyerName || i.buyerId?.slice(0,8) + "…" || "—"}</td>
-            <td colspan="2">${i.sellerId?.slice(0,8) + "…" || "—"}</td>
-            <td>${i.createdAt?.toDate ? i.createdAt.toDate().toLocaleDateString("en-IN") : "—"}</td>
-          </tr>`).join("")
-      : `<tr><td colspan="6" style="text-align:center;padding:20px;color:#9CA3AF;">No interests yet.</td></tr>`
-    }`;
+    ${interests.length ? interests.map(i => `
+      <tr>
+        <td colspan="2">${i.itemId || "—"}</td>
+        <td>${i.buyerName || i.buyerId?.slice(0,8) + "…" || "—"}</td>
+        <td colspan="2">${i.sellerId?.slice(0,8) + "…" || "—"}</td>
+        <td>${i.createdAt?.toDate ? i.createdAt.toDate().toLocaleDateString("en-IN") : "—"}</td>
+      </tr>`).join("")
+    : `<tr><td colspan="6" style="text-align:center;padding:20px;color:#9CA3AF;">No interests yet.</td></tr>`}`;
 }
 
 window.handleAdminDeleteUser = async (uid) => {
-  if (!confirm("Permanently delete this user and all their listings?")) return;
+  if (!confirm("Delete this user and all their listings?")) return;
   try {
-    // Delete all items by this user first
     const userItems = await getUserItems(uid);
     await Promise.all(userItems.map(item => deleteItem(item.id)));
     await deleteUser(uid);
-    showToast("User and their listings deleted.", "success");
+    showToast("User deleted.", "success");
     await loadAdminData();
   } catch (err) { showToast(err.message, "error"); }
 };
@@ -566,17 +555,16 @@ window.handleAdminDeleteItem = async (itemId) => {
     await loadAdminData();
   } catch (err) { showToast(err.message, "error"); }
 };
-}
 
 // ================= FILTER LOGIC =================
 function applyFilters() {
-  const search = document.getElementById("searchInput")?.value.toLowerCase() || "";
+  const search   = document.getElementById("searchInput")?.value.toLowerCase() || "";
   const category = document.getElementById("categoryFilter")?.value || "";
-  const price = document.getElementById("priceFilter")?.value || "";
-  let filtered = [...allItems];
-  if (search) filtered = filtered.filter(i => i.title?.toLowerCase().includes(search) || i.description?.toLowerCase().includes(search));
+  const price    = document.getElementById("priceFilter")?.value || "";
+  let filtered   = [...allItems];
+  if (search)   filtered = filtered.filter(i => i.title?.toLowerCase().includes(search) || i.description?.toLowerCase().includes(search));
   if (category && category !== "All") filtered = filtered.filter(i => i.category === category);
-  if (price) filtered = filtered.filter(i => Number(i.price) <= Number(price));
+  if (price)    filtered = filtered.filter(i => Number(i.price) <= Number(price));
   renderItems(filtered);
 }
 document.getElementById("searchInput")?.addEventListener("input", applyFilters);
