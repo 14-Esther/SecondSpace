@@ -277,14 +277,30 @@ function setupSidebarUser() {
 }
 
 function setupRoleUI() {
-  const navAdminBtn = document.getElementById("navAdminBtn");
-  const navSellBtn  = document.getElementById("navSellBtn");
-  currentUserProfile?.role === "admin"
-    ? navAdminBtn?.classList.remove("hidden")
-    : navAdminBtn?.classList.add("hidden");
-  currentUserProfile?.purpose === "buy"
-    ? navSellBtn?.classList.add("hidden")
-    : navSellBtn?.classList.remove("hidden");
+  const navAdminBtn    = document.getElementById("navAdminBtn");
+  const navSellBtn     = document.getElementById("navSellBtn");
+  const navBrowseBtn   = document.getElementById("navBrowseBtn");
+  const navListingsBtn = document.getElementById("navListingsBtn");
+  const navInterestsBtn= document.getElementById("navInterestsBtn");
+
+  if (currentUserProfile?.role === "admin") {
+    // Admin: show only Admin button, hide everything else
+    navAdminBtn?.classList.remove("hidden");
+    navSellBtn?.classList.add("hidden");
+    navBrowseBtn?.classList.add("hidden");
+    navListingsBtn?.classList.add("hidden");
+    navInterestsBtn?.classList.add("hidden");
+    // Auto-navigate to admin section
+    hideAllSections();
+    document.getElementById("adminSection")?.classList.remove("hidden");
+    setActive(navAdminBtn);
+    loadAdminData();
+  } else {
+    navAdminBtn?.classList.add("hidden");
+    currentUserProfile?.purpose === "buy"
+      ? navSellBtn?.classList.add("hidden")
+      : navSellBtn?.classList.remove("hidden");
+  }
 }
 
 // ================= LOAD BROWSE ITEMS =================
