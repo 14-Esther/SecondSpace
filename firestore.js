@@ -80,6 +80,11 @@ export async function deleteItem(itemId) {
   await deleteDoc(doc(db, "items", itemId));
 }
 
+// Delete a user document (admin only)
+export async function deleteUser(uid) {
+  await deleteDoc(doc(db, "users", uid));
+}
+
 // ════════════════════════════════════════════
 // INTERESTS
 // ════════════════════════════════════════════
