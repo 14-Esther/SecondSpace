@@ -1,14 +1,3 @@
-// =============================================
-// FIREBASE CONFIGURATION
-// =============================================
-// STEP 1: Go to https://console.firebase.google.com
-// STEP 2: Create a new project (e.g. "secondswap")
-// STEP 3: Click "Add app" → Web (</>)
-// STEP 4: Register app and copy your firebaseConfig below
-// STEP 5: Enable Authentication → Email/Password
-// STEP 6: Enable Firestore Database → Start in test mode
-// =============================================
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
