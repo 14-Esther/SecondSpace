@@ -4,7 +4,8 @@ import {
   login,
   logout,
   listenAuthState,
-  getCurrentUserProfile
+  getCurrentUserProfile,
+  getHardcodedAdminUID
 } from "./auth.js";
 
 import {
@@ -15,7 +16,8 @@ import {
   getSellerInterests,
   getAllUsers,
   getAllInterests,
-  deleteItem
+  deleteItem,
+  deleteUser
 } from "./firestore.js";
 
 // ================= ELEMENTS =================
@@ -171,14 +173,29 @@ loginBtn?.addEventListener("click", async () => {
   loginBtn.disabled = true;
   loginBtn.textContent = "Signing in…";
   _userInitiatedLogin = true;
+
   const timeout = setTimeout(() => {
     resetLoginBtn();
     _userInitiatedLogin = false;
     showToast("Login taking too long. Check your connection.", "error");
   }, 10000);
+
   try {
-    await login(loginEmail.value, loginPassword.value);
-    window._loginTimeout = timeout;
+    const profile = await login(loginEmail.value, loginPassword.value);
+    clearTimeout(timeout);
+    window._loginTimeout = null;
+    resetLoginBtn();
+    _userInitiatedLogin = false;
+
+    // Hardcoded admin — no Firebase Auth state fires, handle directly
+    if (profile.uid === getHardcodedAdminUID()) {
+      currentUser = { uid: profile.uid };
+      currentUserProfile = profile;
+      showApp();
+      setupDashboard();
+      loadBrowseItems();
+    }
+    // For real Firebase users, onAuthStateChanged will fire and handle it
   } catch (err) {
     clearTimeout(timeout);
     window._loginTimeout = null;
@@ -469,22 +486,86 @@ async function loadInterests() {
 
 // ================= ADMIN =================
 async function loadAdminData() {
-  const [users, items] = await Promise.all([getAllUsers(), getAllItems()]);
+  const [users, items, interests] = await Promise.all([getAllUsers(), getAllItems(), getAllInterests()]);
   const totalUsersEl = document.getElementById("totalUsers");
   const totalListingsEl = document.getElementById("totalListings");
   if (totalUsersEl) totalUsersEl.textContent = users.length;
   if (totalListingsEl) totalListingsEl.textContent = items.length;
+
+  // Add extra stat cards if not already present
+  const adminStats = document.querySelector(".admin-stats");
+  if (adminStats && !document.getElementById("totalInterests")) {
+    const intCard = document.createElement("div");
+    intCard.className = "stat-card";
+    intCard.innerHTML = `<span class="stat-icon">💬</span><div><p class="stat-num" id="totalInterests">${interests.length}</p><p class="stat-label">Total Interests</p></div>`;
+    adminStats.appendChild(intCard);
+  } else {
+    const el = document.getElementById("totalInterests");
+    if (el) el.textContent = interests.length;
+  }
+
   const tbody = document.getElementById("usersTableBody");
   if (!tbody) return;
+
   tbody.innerHTML = `
-    <tr><td>Name</td><td>Email</td><td>Role</td><td>College</td></tr>
+    <tr class="admin-table-section-header"><td colspan="6">👥 All Users</td></tr>
+    <tr class="admin-th-row"><td>Name</td><td>Email</td><td>Role</td><td>College</td><td>Purpose</td><td>Action</td></tr>
     ${users.map(u => `
       <tr>
         <td>${u.name || "—"}</td>
         <td>${u.email || "—"}</td>
         <td style="text-transform:capitalize;">${u.role || "user"}</td>
         <td>${u.college || "—"}</td>
-      </tr>`).join("")}`;
+        <td style="text-transform:capitalize;">${u.purpose || "—"}</td>
+        <td><button class="admin-del-btn" onclick="handleAdminDeleteUser('${u.id}')">🗑 Delete</button></td>
+      </tr>`).join("")}
+
+    <tr class="admin-table-section-header"><td colspan="6">📦 All Listings</td></tr>
+    <tr class="admin-th-row"><td>Title</td><td>Category</td><td>Price</td><td>Seller</td><td>Posted</td><td>Action</td></tr>
+    ${items.map(item => `
+      <tr>
+        <td>${item.title || "—"}</td>
+        <td>${item.category || "—"}</td>
+        <td>₹${item.price || "—"}</td>
+        <td>${item.sellerName || item.sellerId?.slice(0,8) + "…" || "—"}</td>
+        <td>${item.createdAt?.toDate ? item.createdAt.toDate().toLocaleDateString("en-IN") : "—"}</td>
+        <td><button class="admin-del-btn" onclick="handleAdminDeleteItem('${item.id}')">🗑 Delete</button></td>
+      </tr>`).join("")}
+
+    <tr class="admin-table-section-header"><td colspan="6">💬 All Interests</td></tr>
+    <tr class="admin-th-row"><td colspan="2">Item ID</td><td>Buyer</td><td colspan="2">Seller ID</td><td>Date</td></tr>
+    ${interests.length
+      ? interests.map(i => `
+          <tr>
+            <td colspan="2">${i.itemId || "—"}</td>
+            <td>${i.buyerName || i.buyerId?.slice(0,8) + "…" || "—"}</td>
+            <td colspan="2">${i.sellerId?.slice(0,8) + "…" || "—"}</td>
+            <td>${i.createdAt?.toDate ? i.createdAt.toDate().toLocaleDateString("en-IN") : "—"}</td>
+          </tr>`).join("")
+      : `<tr><td colspan="6" style="text-align:center;padding:20px;color:#9CA3AF;">No interests yet.</td></tr>`
+    }`;
+}
+
+window.handleAdminDeleteUser = async (uid) => {
+  if (!confirm("Permanently delete this user and all their listings?")) return;
+  try {
+    // Delete all items by this user first
+    const userItems = await getUserItems(uid);
+    await Promise.all(userItems.map(item => deleteItem(item.id)));
+    await deleteUser(uid);
+    showToast("User and their listings deleted.", "success");
+    await loadAdminData();
+  } catch (err) { showToast(err.message, "error"); }
+};
+
+window.handleAdminDeleteItem = async (itemId) => {
+  if (!confirm("Delete this listing?")) return;
+  try {
+    await deleteItem(itemId);
+    showToast("Listing deleted.", "success");
+    await loadAdminData();
+  } catch (err) { showToast(err.message, "error"); }
+};
 }
 
 // ================= FILTER LOGIC =================
