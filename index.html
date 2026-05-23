@@ -2,297 +2,416 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>SecondSpace</title>
+  <title>SecondSpace — Student Marketplace</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Fonts: Syne (display) + Plus Jakarta Sans (body) -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
+  <!-- ================= LANDING PAGE ================= -->
   <div id="landingPage">
+
+    <!-- Animated BG blobs -->
+    <div class="bg-orb orb1"></div>
+    <div class="bg-orb orb2"></div>
+    <div class="bg-orb orb3"></div>
+
     <header class="top-header">
-      <h2>SecondSpace</h2>
-      <div class="header-actions">
-        <button id="goToLoginBtn">Login</button>
-        <button id="goToRegisterBtn">Get Started</button>
+      <div class="logo">
+        <span class="logo-icon">♻</span>
+        <span class="logo-text">SecondSpace</span>
       </div>
+      <nav class="header-actions">
+        <button id="goToLoginBtn" class="btn-ghost">Sign In</button>
+        <button id="goToRegisterBtn" class="btn-primary">Get Started →</button>
+      </nav>
     </header>
 
     <section class="hero">
       <div class="hero-content">
-        <span class="tag">Student Marketplace</span>
-        <h1>Buy, Sell and Exchange Essentials Easily</h1>
-        <p>
-          SecondSpace is a simple platform for students to buy and sell pre-owned items,
-          connect with others, and make second-hand shopping more affordable and convenient.
+        <div class="hero-pill">🎓 Built for Students</div>
+        <h1>Buy. Sell.<br /><span class="h1-accent">Connect.</span></h1>
+        <p class="hero-sub">
+          SecondSpace is your campus marketplace — find textbooks, gadgets, furniture and more at student-friendly prices.
         </p>
-
-        <div class="hero-buttons">
-          <button id="heroRegisterBtn">Start Selling</button>
-          <button id="heroLoginBtn">Browse Items</button>
+        <div class="hero-btns">
+          <button id="heroRegisterBtn" class="btn-primary btn-lg">Start Selling →</button>
+          <button id="heroLoginBtn" class="btn-outline btn-lg">Browse Items</button>
+        </div>
+        <div class="hero-trust">
+          <span>✓ Free to use</span>
+          <span>✓ Affordable Deals</span>
+          <span>✓ Safe & simple</span>
         </div>
       </div>
 
-      <div class="hero-card">
-        <h3>What you can find</h3>
-        <div class="category-grid">
+      <div class="hero-visual">
+        <div class="floating-card fc1">
+          <span class="fc-emoji">📚</span>
+          <div>
+            <p class="fc-name">Books and Notes</p>
+            <p class="fc-price">Study Materials For Every Semester</p>
+          </div>
+          <span class="fc-badge">Study Materials</span>
+        </div>
+        <div class="floating-card fc2">
+          <span class="fc-emoji">💻</span>
+          <div>
+            <p class="fc-name">Electronics and Gadgets</p>
+            <p class="fc-price">Laptops, tablets, headphones & more</p>
+          </div>
+          <span class="fc-badge">Gadgets</span>
+        </div>
+        <div class="floating-card fc3">
+          <span class="fc-emoji">🪑</span>
+          <div>
+            <p class="fc-name">Furniture and Essentials</p>
+            <p class="fc-price">Everything for your student space</p>
+          </div>
+          <span class="fc-badge">Essentials</span>
+        </div>
+        <!-- <div class="stats-bubble sb1">
+          <span class="sb-num">500+</span>
+          <span class="sb-label">Students</span>
+        </div>
+        <div class="stats-bubble sb2">
+          <span class="sb-num">₹0</span>
+          <span class="sb-label">Fee</span>
+        </div>
+      </div> -->
+    </section>
 
-  <div class="flip-card">
-    <div class="flip-card-inner">
-      <div class="flip-card-front">
-        📚 Books
+    <!-- Categories strip -->
+    <section class="categories-strip">
+      <div class="cat-item">
+        <span>📚</span>
+        <p>Study Materials</p>
       </div>
-      <div class="flip-card-back">
-        Notes, textbooks, guides and study materials.
+      <div class="cat-divider"></div>
+      <div class="cat-item">
+        <span>💻</span>
+        <p>Gadgets</p>
       </div>
-    </div>
-  </div>
-
-  <div class="flip-card">
-    <div class="flip-card-inner">
-      <div class="flip-card-front">
-        💻 Electronics
+      <div class="cat-divider"></div>
+      <div class="cat-item">
+        <span>🪑</span>
+        <p>Essentials</p>
       </div>
-      <div class="flip-card-back">
-        Laptops, calculators, gadgets and accessories.
+      <div class="cat-divider"></div>
+      <div class="cat-item">
+        <span>👕</span>
+        <p>Fashion</p>
       </div>
-    </div>
-  </div>
-
-  <div class="flip-card">
-    <div class="flip-card-inner">
-      <div class="flip-card-front">
-        🪑 Essentials
-      </div>
-      <div class="flip-card-back">
-        Furniture, bags, hostel and daily essentials.
-      </div>
-    </div>
-  </div>
-
-  <div class="flip-card">
-    <div class="flip-card-inner">
-      <div class="flip-card-front">
-        👕 Lifestyle
-      </div>
-      <div class="flip-card-back">
-        Clothes, fashion, decor and personal items.
-      </div>
-    </div>
-  </div>
-
-</div>
+      <div class="cat-divider"></div>
+      <div class="cat-item">
+        <span>✨</span>
+        <p>Lifestyle</p>
       </div>
     </section>
+
   </div>
 
+  <!-- ================= AUTH PAGE ================= -->
   <div id="authPage" class="hidden">
-    <div class="auth-card">
+    <div class="auth-bg">
+      <div class="bg-orb orb1"></div>
+      <div class="bg-orb orb3"></div>
+    </div>
 
-      <div id="loginView">
-        <h2>Login</h2>
-        <p class="subtext">Welcome back to SecondSpace</p>
-
-        <input id="loginEmail" type="email" placeholder="Email" />
-        <input id="loginPassword" type="password" placeholder="Password" />
-
-        <button id="loginBtn">Login</button>
-
-        <p class="switch-text">
-          Don't have an account?
-          <button type="button" id="showRegisterBtn" class="link-btn">Register</button>
-        </p>
-
-        <button type="button" id="backHomeFromLogin" class="back-home-btn">← Back to home</button>
+    <div class="auth-wrap">
+      <!-- Left panel -->
+      <div class="auth-left">
+        <div class="logo auth-logo">
+          <span class="logo-icon">♻</span>
+          <span class="logo-text">SecondSpace</span>
+        </div>
+        <h2 class="auth-tagline">The campus marketplace <em>students</em> actually love.</h2>
+        <div class="auth-perks">
+        <div class="perk"><span>🛡️</span><p>Safe & trusted marketplace</p></div>
+        <div class="perk"><span>💬</span><p>Easy buyer–seller interaction</p></div>
+        <div class="perk"><span>📍</span><p>Built for your campus</p></div>
+        </div>
       </div>
 
-      <div id="registerView" class="hidden">
-        <h2>Create Account</h2>
-        <p class="subtext">Join SecondSpace and start listing items</p>
+      <!-- Right panel - forms -->
+      <div class="auth-card">
 
-        <input id="registerName" type="text" placeholder="Full Name" />
-        <input id="registerCollege" type="text" placeholder="College Name" />
-        <input id="registerDepartment" type="text" placeholder="Course / Department" />
-        <input id="registerYear" type="text" placeholder="Year / Semester" />
-        <textarea id="registerAddress" placeholder="Address"></textarea>
-        <input id="registerEmail" type="email" placeholder="Email" />
-        <input id="registerPassword" type="password" placeholder="Password" />
+        <!-- LOGIN -->
+        <div id="loginView">
+          <div class="auth-form-header">
+            <h3>Welcome back</h3>
+            <p>Sign in to your account</p>
+          </div>
 
-        <button id="registerBtn">Create Account</button>
+          <div class="field-group">
+            <label>Email</label>
+            <input id="loginEmail" type="email" placeholder="you@college.edu" />
+          </div>
+          <div class="field-group">
+            <label>Password</label>
+            <input id="loginPassword" type="password" placeholder="Your password" />
+          </div>
 
-        <p class="switch-text">
-          Already have an account?
-          <button type="button" id="showLoginBtn" class="link-btn">Login</button>
-        </p>
+          <button id="loginBtn" class="btn-primary btn-full">Sign In →</button>
 
-        <button type="button" id="backHomeFromRegister" class="back-home-btn">← Back to home</button>
+          <p class="auth-switch">
+            No account yet?
+            <button id="showRegisterBtn" class="link-btn">Create one</button>
+          </p>
+          <button id="backHomeFromLogin" class="btn-ghost-sm">← Back to home</button>
+        </div>
+
+        <!-- REGISTER -->
+        <div id="registerView" class="hidden">
+          <div class="auth-form-header">
+            <h3>Create account</h3>
+            <p>Join your campus marketplace</p>
+          </div>
+
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Full Name *</label>
+              <input id="registerName" type="text" placeholder="Arjun Kumar" />
+            </div>
+            <div class="field-group">
+              <label>Year</label>
+              <input id="registerYear" type="text" placeholder="2nd Year" />
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>College</label>
+            <input id="registerCollege" type="text" placeholder="Your college name" />
+          </div>
+
+          <div class="field-group">
+            <label>Department</label>
+            <input id="registerDepartment" type="text" placeholder="CSE / ECE / MBA..." />
+          </div>
+
+          <div class="fields-row">
+            <div class="field-group">
+              <label>Role *</label>
+              <select id="registerRole">
+                <option value="">Select role</option>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Purpose</label>
+              <select id="registerPurpose">
+                <option value="">Select purpose</option>
+                <option value="buy">Buyer</option>
+                <option value="sell">Seller</option>
+                <option value="both">Both</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>Address</label>
+            <textarea id="registerAddress" placeholder="Hostel / Local address" rows="2"></textarea>
+          </div>
+
+          <div class="field-group">
+            <label>Email *</label>
+            <input id="registerEmail" type="email" placeholder="you@college.edu" />
+          </div>
+
+          <div class="field-group">
+            <label>Password *</label>
+            <input id="registerPassword" type="password" placeholder="Min. 6 characters" />
+          </div>
+
+          <button id="registerBtn" class="btn-primary btn-full">Create Account →</button>
+
+          <p class="auth-switch">
+            Already have an account?
+            <button id="showLoginBtn" class="link-btn">Sign in</button>
+          </p>
+          <button id="backHomeFromRegister" class="btn-ghost-sm">← Back to home</button>
+        </div>
+
       </div>
-
     </div>
   </div>
 
+  <!-- ================= DASHBOARD ================= -->
   <div id="app" class="hidden">
     <div class="dashboard-layout">
 
+      <!-- SIDEBAR -->
       <aside class="sidebar">
-        <div>
-          <div class="sidebar-logo">SecondSpace</div>
+        <div class="sidebar-top">
+          <div class="logo sidebar-logo">
+            <span class="logo-icon">♻</span>
+            <span class="logo-text">SecondSpace</span>
+          </div>
+
+          <div class="sidebar-user" id="sidebarUser">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div class="user-info">
+              <p class="user-name" id="sidebarName">User</p>
+              <p class="user-role" id="sidebarRole">Student</p>
+            </div>
+          </div>
 
           <nav class="sidebar-nav">
-            <button class="nav-item active" id="navBrowseBtn">
-              <span class="nav-icon">🏠</span>
+            <button id="navBrowseBtn" class="nav-btn active">
+              <span class="nav-icon">🏪</span>
               <span>Browse</span>
             </button>
-
-            <button class="nav-item" id="navSellBtn">
-              <span class="nav-icon">＋</span>
+            <button id="navSellBtn" class="nav-btn">
+              <span class="nav-icon">➕</span>
               <span>Sell Item</span>
             </button>
-
-            <button class="nav-item" id="navListingsBtn">
-              <span class="nav-icon">🗂️</span>
+            <button id="navListingsBtn" class="nav-btn">
+              <span class="nav-icon">📦</span>
               <span>My Listings</span>
             </button>
-
-            <button class="nav-item" id="navInterestsBtn">
-              <span class="nav-icon">♡</span>
+            <button id="navInterestsBtn" class="nav-btn">
+              <span class="nav-icon">💬</span>
               <span>Interests</span>
             </button>
-
-            <button class="nav-item hidden" id="navAdminBtn">
-              <span class="nav-icon">🛡️</span>
+            <button id="navAdminBtn" class="nav-btn hidden">
+              <span class="nav-icon">⚙️</span>
               <span>Admin</span>
             </button>
           </nav>
         </div>
 
-        <div class="sidebar-bottom">
-          <button id="logoutBtn" class="logout-sidebar-btn">Logout</button>
-        </div>
+        <button id="logoutBtn" class="logout-btn">
+          <span>↩</span> Sign Out
+        </button>
       </aside>
 
+      <!-- CONTENT -->
       <main class="dashboard-content">
 
-        <section id="browseSection" class="page-section">
+        <!-- BROWSE -->
+        <section id="browseSection">
           <div class="section-header">
-            <h1>Browse Items</h1>
-            <p>Find items listed by students and admins</p>
+            <div>
+              <h1>Browse Items</h1>
+              <p class="section-sub">Find great deals from fellow students</p>
+            </div>
           </div>
 
-          <div class="listings-grid" id="listingsGrid"></div>
-
-          <div class="empty-state hidden" id="emptyState">
-            <div class="empty-icon">📦</div>
-            <p>No items available</p>
-          </div>
-        </section>
-
-        <section id="sellSection" class="page-section hidden">
-          <div class="section-header">
-            <h1>Sell Item</h1>
-            <p>Add complete details for your item</p>
-          </div>
-
-          <div class="form-card sell-form">
-            <input type="text" id="itemTitle" placeholder="Item Name" />
-
-            <select id="itemCategory">
-              <option value="">Select Category</option>
-              <option>Books</option>
-              <option>Electronics</option>
-              <option>Furniture</option>
-              <option>Clothing</option>
-              <option>Accessories</option>
-              <option>Other</option>
+          <!-- Filters bar -->
+          <div class="filters-bar">
+            <div class="search-wrap">
+              <span class="search-icon">🔍</span>
+              <input id="searchInput" type="text" placeholder="Search items..." class="search-input" />
+            </div>
+            <select id="categoryFilter" class="filter-select">
+              <option value="">All Categories</option>
+              <option value="Books">📚 Books</option>
+              <option value="Electronics">💻 Electronics</option>
+              <option value="Furniture">🪑 Furniture</option>
+              <option value="Clothing">👕 Clothing</option>
             </select>
+            <input id="priceFilter" type="number" placeholder="Max ₹ price" class="filter-price" />
+          </div>
 
-            <input type="text" id="itemPrice" placeholder="Price (₹)" />
+          <div id="listingsGrid" class="items-grid"></div>
+        </section>
 
-            <select id="itemCondition">
-              <option value="">Select Condition</option>
-              <option>New</option>
-              <option>Like New</option>
-              <option>Good</option>
-              <option>Used</option>
-            </select>
-
-            <textarea id="itemDescription" placeholder="Description"></textarea>
-            <input type="text" id="itemPhone" placeholder="Phone Number" />
-            <input type="email" id="itemEmail" placeholder="Contact Email" />
-
-            <button id="addItemBtn">Add Item</button>
+        <!-- SELL -->
+        <section id="sellSection" class="hidden">
+          <div class="section-header">
+            <div>
+              <h1>List an Item</h1>
+              <p class="section-sub">Sell your stuff to fellow students</p>
+            </div>
+          </div>
+          <div class="sell-form-card">
+            <div class="fields-row">
+              <div class="field-group">
+                <label>Item Name *</label>
+                <input id="itemTitle" placeholder="e.g. Engineering Mathematics" />
+              </div>
+              <div class="field-group">
+                <label>Price (₹) *</label>
+                <input id="itemPrice" type="number" placeholder="e.g. 350" />
+              </div>
+            </div>
+            <div class="field-group">
+              <label>Category</label>
+              <select id="itemCategory">
+                <option value="Books">📚 Books</option>
+                <option value="Electronics">💻 Electronics</option>
+                <option value="Furniture">🪑 Furniture</option>
+                <option value="Clothing">👕 Clothing</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Description</label>
+              <textarea id="itemDescription" placeholder="Condition, edition, any notes..." rows="4"></textarea>
+            </div>
+            <button id="addItemBtn" class="btn-primary btn-lg">
+              🚀 Post Listing
+            </button>
           </div>
         </section>
 
-        <section id="myListingsSection" class="page-section hidden">
+        <!-- MY LISTINGS -->
+        <section id="myListingsSection" class="hidden">
           <div class="section-header">
-            <h1>My Listings</h1>
-            <p>Items you have posted</p>
+            <div>
+              <h1>My Listings</h1>
+              <p class="section-sub">Items you've listed for sale</p>
+            </div>
           </div>
-
-          <div class="listings-grid" id="myListingsGrid"></div>
-
-          <div class="empty-state hidden" id="myListingsEmptyState">
-            <div class="empty-icon">🗂️</div>
-            <p>No listings yet</p>
-          </div>
+          <div id="myListingsGrid" class="items-grid"></div>
         </section>
 
-        <section id="interestsSection" class="page-section hidden">
+        <!-- INTERESTS -->
+        <section id="interestsSection" class="hidden">
           <div class="section-header">
-            <h1>Interests</h1>
-            <p>Buyers who want your items</p>
+            <div>
+              <h1>Interests</h1>
+              <p class="section-sub">Buyers interested in your items</p>
+            </div>
           </div>
-
-          <div class="table-card">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Buyer</th>
-                  <th>Email</th>
-                  <th>Item</th>
-                  <th>Message</th>
-                </tr>
-              </thead>
+          <div class="table-wrap">
+            <table>
               <tbody id="interestsTableBody"></tbody>
             </table>
           </div>
         </section>
 
-        <section id="adminSection" class="page-section hidden">
+        <!-- ADMIN -->
+        <section id="adminSection" class="hidden">
           <div class="section-header">
-            <h1>Admin Dashboard</h1>
-            <p>Overview of users, items and interests</p>
-          </div>
-
-          <div class="admin-cards">
-            <div class="admin-card">
-              <h3>Total Users</h3>
-              <p id="totalUsers">0</p>
-            </div>
-            <div class="admin-card">
-              <h3>Total Listings</h3>
-              <p id="totalListings">0</p>
-            </div>
-            <div class="admin-card">
-              <h3>Total Interests</h3>
-              <p id="totalInterests">0</p>
+            <div>
+              <h1>Admin Dashboard</h1>
+              <p class="section-sub">Platform overview</p>
             </div>
           </div>
-
-          <div class="table-card">
-            <h3>Users</h3>
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>College</th>
-                  <th>Department</th>
-                  <th>Year</th>
-                  <th>Role</th>
-                </tr>
-              </thead>
+          <div class="admin-stats">
+            <div class="stat-card">
+              <span class="stat-icon">👥</span>
+              <div>
+                <p class="stat-num" id="totalUsers">0</p>
+                <p class="stat-label">Total Users</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">📦</span>
+              <div>
+                <p class="stat-num" id="totalListings">0</p>
+                <p class="stat-label">Total Listings</p>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
               <tbody id="usersTableBody"></tbody>
             </table>
           </div>
@@ -301,6 +420,9 @@
       </main>
     </div>
   </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast hidden"></div>
 
   <script type="module" src="app.js"></script>
 </body>
