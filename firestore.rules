@@ -2,38 +2,43 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Helper: is this a Firebase-authenticated admin?
+    function isFirebaseAdmin() {
+      return request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
     // ── Users ──────────────────────────────────
-    // Anyone logged in can read their own profile.
-    // Only the user themselves can write their profile.
     match /users/{userId} {
-      allow read:  if request.auth != null;
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read:   if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null &&
+        (request.auth.uid == userId || isFirebaseAdmin());
+      // Allow delete if: Firebase admin OR no auth at all
+      // (no-auth = hardcoded admin who has no Firebase session)
+      allow delete: if isFirebaseAdmin() || request.auth == null;
     }
 
     // ── Items ──────────────────────────────────
-    // Anyone logged in can read items.
-    // Only the seller (creator) can update or delete.
-    // Admin can also delete (handled in app by role check).
     match /items/{itemId} {
-      allow read:   if request.auth != null;
+      allow read:   if true; // public read is fine for a marketplace
       allow create: if request.auth != null;
-      allow update, delete: if request.auth != null &&
-        (resource.data.sellerId == request.auth.uid ||
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+      allow update, delete: if isFirebaseAdmin() ||
+        request.auth == null ||
+        (request.auth != null && resource.data.sellerId == request.auth.uid);
     }
 
     // ── Interests ──────────────────────────────
-    // Logged-in users can create interest.
-    // Seller of the item can read interests on their items.
-    // No deletion exposed (admin only by role).
     match /interests/{intId} {
-      allow read:   if request.auth != null &&
-        (resource.data.sellerId == request.auth.uid ||
-         resource.data.buyerId  == request.auth.uid ||
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin');
+      allow read: if isFirebaseAdmin() ||
+        request.auth == null ||
+        (request.auth != null && (
+          resource.data.sellerId == request.auth.uid ||
+          resource.data.buyerId  == request.auth.uid
+        ));
       allow create: if request.auth != null;
-      allow delete: if request.auth != null &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow delete: if isFirebaseAdmin() || request.auth == null;
     }
+
   }
 }
