@@ -410,21 +410,58 @@ select {
   transform: translateY(-6px) !important;
   box-shadow: var(--shadow-lg);
 }
-.fc1 { top: 20px; left: 20px; animation: fc1float 6s ease-in-out infinite alternate; }
-.fc2 { top: 140px; right: 0; animation: fc2float 7s ease-in-out infinite alternate; }
-.fc3 { bottom: 60px; left: 40px; animation: fc3float 8s ease-in-out infinite alternate; }
+.fc1 {
+  top: 20px;
+  left: 20px;
+  animation: float1 4s ease-in-out infinite;
+}
 
-@keyframes fc1float {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(-12px); }
+.fc2 {
+  top: 140px;
+  right: 0;
+  animation: float2 5s ease-in-out infinite;
 }
-@keyframes fc2float {
-  0%   { transform: translateY(-8px); }
-  100% { transform: translateY(8px); }
+
+.fc3 {
+  bottom: 60px;
+  left: 40px;
+  animation: float3 6s ease-in-out infinite;
 }
-@keyframes fc3float {
-  0%   { transform: translateY(0) rotate(-1deg); }
-  100% { transform: translateY(-10px) rotate(1deg); }
+
+@keyframes float1 {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes float2 {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes float3 {
+  0% {
+    transform: translateY(0px) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(-1deg);
+  }
 }
 
 .fc-emoji {
