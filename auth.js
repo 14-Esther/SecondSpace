@@ -1,4 +1,5 @@
 import { auth, db } from "./firebase-config.js";
+
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -12,13 +13,23 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const ADMIN_EMAIL = "chuiyanimkasar014@gmail.com";
-
+// ================= AUTH LISTENER =================
 export function listenAuthState(cb) {
   return onAuthStateChanged(auth, cb);
 }
 
-export async function register(name, college, dept, year, address, email, password) {
+// ================= REGISTER =================
+export async function register(
+  name,
+  college,
+  dept,
+  year,
+  address,
+  email,
+  password,
+  role,
+  purpose
+) {
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -29,10 +40,13 @@ export async function register(name, college, dept, year, address, email, passwo
       year,
       address,
       email,
-      role: email === ADMIN_EMAIL ? "admin" : "user"
+      role: role || "user",          // user/admin from UI
+      purpose: role === "admin" ? "admin" : (purpose || "buy"), // purpose for users
+      createdAt: new Date()
     });
 
     return cred.user;
+
   } catch (error) {
     if (error.code === "auth/email-already-in-use") {
       throw new Error("This email is already registered.");
@@ -45,6 +59,7 @@ export async function register(name, college, dept, year, address, email, passwo
   }
 }
 
+// ================= LOGIN =================
 export async function login(email, password) {
   try {
     const cred = await signInWithEmailAndPassword(auth, email, password);
@@ -53,10 +68,14 @@ export async function login(email, password) {
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
-      throw new Error("User profile not found in Firestore.");
+      throw new Error("User profile not found.");
     }
 
-    return { uid: cred.user.uid, ...userSnap.data() };
+    return {
+      uid: cred.user.uid,
+      ...userSnap.data()
+    };
+
   } catch (error) {
     if (error.code === "auth/user-not-found") {
       throw new Error("No account found with this email.");
@@ -71,9 +90,12 @@ export async function login(email, password) {
   }
 }
 
+// ================= LOGOUT =================
 export async function logout() {
   await signOut(auth);
 }
+
+// ================= GET USER =================
 export async function getCurrentUserProfile(uid) {
   const snap = await getDoc(doc(db, "users", uid));
   if (!snap.exists()) return null;
