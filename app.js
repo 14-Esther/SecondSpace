@@ -64,7 +64,6 @@ const addItemBtn  = document.getElementById("addItemBtn");
 let currentUser        = null;
 let currentUserProfile = null;
 let allItems           = [];
-let _userInitiatedLogin = false;
 
 // ================= TOAST =================
 function showToast(message, type = "default", duration = 3500) {
@@ -175,19 +174,15 @@ loginBtn?.addEventListener("click", async () => {
   try {
     const profile = await login(loginEmail.value, loginPassword.value);
 
-    // Hardcoded admin: Firebase Auth never fires, so we handle everything here
-    if (profile.uid === ADMIN_UID) {
-      resetLoginBtn();
-      currentUser        = { uid: ADMIN_UID };
-      currentUserProfile = profile;
-      showApp();
-      setupDashboard();
-      loadBrowseItems();
-      return;
-    }
+    // Works for both hardcoded admin and normal Firebase users —
+    // login() already returns a complete profile object with uid + role
+    currentUser        = { uid: profile.uid };
+    currentUserProfile = profile;
 
-    // Normal users: set flag so onAuthStateChanged picks it up
-    _userInitiatedLogin = true;
+    resetLoginBtn();
+    showApp();
+    setupDashboard();
+    loadBrowseItems();
 
   } catch (err) {
     resetLoginBtn();
@@ -203,40 +198,29 @@ logoutBtn?.addEventListener("click", async () => {
   }
   currentUser        = null;
   currentUserProfile = null;
-  _userInitiatedLogin = false;
   showHome();
 });
 
-// ================= AUTH STATE (Firebase users only) =================
+// ================= AUTH STATE (page refresh / session restore only) =================
 listenAuthState(async (user) => {
-  if (!user) {
-    resetLoginBtn();
-    // If app is open and it's not the hardcoded admin, go home
-    if (!app.classList.contains("hidden") && currentUser?.uid !== ADMIN_UID) {
-      showHome();
-    }
-    return;
-  }
+  if (!user) return; // not logged in — stay on whatever page is currently showing
 
-  currentUser = user;
+  // If we already handled this via the login button, don't re-trigger
+  if (!app.classList.contains("hidden")) return;
+
   try {
-    currentUserProfile = await getCurrentUserProfile(user.uid);
-  } catch (err) {
-    console.error("Profile fetch failed:", err);
-  }
+    const profile = await getCurrentUserProfile(user.uid);
+    if (!profile) return; // e.g. hardcoded admin has no Firestore doc
 
-  resetLoginBtn();
+    currentUser        = { uid: user.uid };
+    currentUserProfile = { uid: user.uid, ...profile };
 
-  const onAuthPage = !authPage.classList.contains("hidden");
-  const onApp      = !app.classList.contains("hidden");
-
-  if (_userInitiatedLogin || onAuthPage || onApp) {
     showApp();
     setupDashboard();
     loadBrowseItems();
+  } catch (err) {
+    console.error("Profile fetch failed:", err);
   }
-
-  _userInitiatedLogin = false;
 });
 
 // ================= DASHBOARD SETUP =================
